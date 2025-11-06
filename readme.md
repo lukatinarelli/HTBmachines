@@ -66,11 +66,11 @@ chmod +x htbmachines.sh
 Si quieres autocompletado usa el siguiente comando:
 
 ```Bash
-source .htb-autocomplete.zsh
+source .htb-autocomplete
 ```
 
 > [!NOTE]
-> Si quieres el autocompletado permanente, añade `source .htb-autocomplete.zsh` a tu `~/.zshrc` o `~/.bashrc`.
+> Si quieres el autocompletado permanente, añade `source .htb-autocomplete` a tu `~/.zshrc` o `~/.bashrc`.
 
 ---
 
