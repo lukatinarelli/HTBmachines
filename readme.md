@@ -59,8 +59,8 @@ cd HTBmachines
 chmod +x htbmachines.sh
 ```
 
-> [!Note]
-> Consejo: Puedes añadir la ruta del repo en tu **PATH** para ejecutar el script con `htbmachines.sh` desde cualquier directorio.
+> [!TIP]
+> Puedes añadir la ruta del repo en tu **PATH** para ejecutar el script con `htbmachines.sh` desde cualquier directorio.
 
 ### Autocompletado (opcional)
 Si quieres autocompletado usa el siguiente comando:
@@ -69,7 +69,7 @@ Si quieres autocompletado usa el siguiente comando:
 source .htb-autocomplete.zsh
 ```
 
-> [!Note]
+> [!NOTE]
 > Si quieres el autocompletado permanente, añade `source .htb-autocomplete.zsh` a tu `~/.zshrc` o `~/.bashrc`.
 
 ---
