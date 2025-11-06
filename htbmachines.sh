@@ -54,8 +54,27 @@ function helpPanel(){
     echo -e "${grayColour}  htbmachines.sh -d 'Easy'${endColour}       ${turquoiseColour}# Buscar por dificultad de máquina${endColour}"
     echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Opciones:${endColour}"
     echo -e "  ${purpleColour}m${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por nombre de máquina.${endColour}"
+
+    #echo -e "\t${purpleColour}a${endColour}${turquoiseColour})${endColour} ${grayColour}Listar todas las máquinas.${endColour}"
+    #echo -e "\t${purpleColour}i${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por dirección IP.${endColour}"
+    #echo -e "\t${purpleColour}l${endColour}${turquoiseColour})${endColour} ${grayColour}Listar todas las direcciones IP.${endColour}"
+    #echo -e "\t${purpleColour}o${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por el sistema operativo${endColour}: ${blackColour}Linux${endColour} |  {blueColour}Windows${endColour}"
+    #echo -e "\t${purpleColour}d${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por la dificultad de una máquina${endColour}: ${greenColour}Easy${endColour} | ${yellowColour}Medium${endColour} | ${redColour}Hard${endColour} | ${purpleColour}Insane${endColour}"
+    #echo -e "\t${purpleColour}t${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por técnica.${endColour}"
+    #echo -e "\t${purpleColour}T${endColour}${turquoiseColour})${endColour} ${grayColour}Listar todas las técnicas.${endColour}"
+    #echo -e "\t${purpleColour}c${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por certificación.${endColour}"
+    #echo -e "\t${purpleColour}y${endColour}${turquoiseColour})${endColour} ${grayColour}Obtener link de la resolución de la máquina en YouTube.${endColour}"
+    #echo -e "\t${purpleColour}p${endColour}${turquoiseColour})${endColour} ${grayColour}Listar máquinas por plataforma${endColour}: ${greenColour}HackTheBox${endColour} | ${turquoiseColour}VulnHub${endColour} | ${orangeColour}PortSwigger${endColour}"
+    #echo -e "\t${purpleColour}I${endColour}${turquoiseColour})${endColour} ${grayColour}Iniciar modo interactivo.${endColour}"
+
     echo -e "  ${purpleColour}u${endColour}${turquoiseColour})${endColour} ${grayColour}Descargar o actualizar ficheros necesarios.${endColour}"
     echo -e "  ${purpleColour}h${endColour}${turquoiseColour})${endColour} ${grayColour}Mostrar panel de ayuda.${endColour}"
+    echo -e "  ${purpleColour}v${endColour}${turquoiseColour})${endColour} ${grayColour}Versión.${endColour}"
+
+    echo -e "\n${yellowColour}[+]${endColour} Excel: ${blueColour}https://docs.google.com/spreadsheets/d/1dzvaGlT_0xnT-PGO27Z_4prHgA8PHIpErmoWdlUrSoA/edit#gid=0${endColour}"
+    echo -e "${yellowColour}[+]${endColour} Web infosecmachines: ${blueColour}https://infosecmachines.io/${endColour}"
+    echo -e "\n${yellowColour}[+]${endColour} Github del proyecto: ${blueColour}https://github.com/lukatinarelli/HTBmachines${endColour}"
+
 }
 
 # ---------------------------
