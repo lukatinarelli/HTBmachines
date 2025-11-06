@@ -39,13 +39,6 @@ Si quieres autocompletado en la flag `-m`, añade lo siguiente a tu `~/.zshrc` o
 ```bash
 source /ruta/al/archivo/.htb-autocomplete
 ```
-Luego recarga la configuración:
-```bash
-$ source ~/.zshrc   # o ~/.bashrc
-```
-
-## Versión
-**v1.0** - Primera versión funcional.
 
 ## Licencia
 MIT License.
