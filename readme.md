@@ -22,7 +22,7 @@
 - [Instalación](#-instalación)
 - [Uso](#-uso)
 - [Créditos](#-créditos)
-- [Licencia](#-licencia)
+- [Licencia](#%EF%B8%8F-licencia)
 
 ---
 
