@@ -17,7 +17,7 @@
 </p>
 
 ## 📚 Índice
-- [Introducción](-#introducción)
+- [Introducción](#-introducción)
 - [Características](#-características)
 - [Instalación](#-instalación)
 - [Uso](#-uso)
