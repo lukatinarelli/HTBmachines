@@ -18,27 +18,22 @@
 
 # Índice
 * [Introducción](#introducción)
-* []
+* [Características](#Características)
 * []
 * []
 * [Licencia](#licencia)
 
-# Introducción
-MIT License.
+# 📜 Introducción
+HTBMachines es un script diseñado para buscar información detallada sobre máquinas de Hack The Box, VulnHub y PortSwigger. Este proyecto se basa en la base de datos y tutoriales proporcionados por @S4vitar.
 
-
-Script en Bash para consultar información de máquinas de Hack The Box a partir del archivo `infosecmachines.json`.
-
-
-
-## Características
+# 🔨 Características
 - Búsqueda de máquinas por nombre (`-m`, `--machine`).
 - Actualización del archivo `infosecmachines.json` (`-u`, `--update`).
 - Información del script y ayuda (`-h`, `--help`).
 - Versión del script (`-v`, `--version`).
 - Autocompletado opcional para la flag `-m`.
 
-## Instalación
+# Instalación
 Dependencias:
 - curl
 - awk
