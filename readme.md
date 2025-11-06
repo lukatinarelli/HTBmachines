@@ -79,7 +79,7 @@ source .htb-autocomplete.<tu_shell>
 source .htb-autocomplete.zsh
 ```
 > [!NOTE]
-> Si quieres que el autocompletado sea permanente, añade la línea source correspondiente a tu archivo de configuración (~/.zshrc o ~/.bashrc).
+> Si quieres que el autocompletado sea permanente, añade la línea source correspondiente a tu archivo de configuración (`~/.zshrc` o `~/.bashrc`).
 
 ---
 
