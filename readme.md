@@ -16,68 +16,39 @@
   <img alt="HTB" src="https://img.shields.io/badge/HackTheBox-111927?style=flat&logo=Hack%20The%20Box&logoColor=9FEF00">
 </p>
 
-## Índice
-- [Introducción](#-introducción)
-- [Características](#-características)
-- [Instalación](#Instalación)
-- [Uso](#Uso)
+## 📚 Índice
+- [Introducción](#introducción)
+- [Características](#características)
+- [Instalación](#instalación)
+- [Uso](#uso)
 - [Licencia](#licencia)
 
+---
+
 ## 📜 Introducción
-HTBMachines es un script diseñado para buscar información detallada sobre máquinas de Hack The Box, VulnHub y PortSwigger. Este proyecto se basa en la base de datos y tutoriales proporcionados por @S4vitar.
+HTBMachines es un **potente *script* en Bash** diseñado para **consultar información detallada** sobre máquinas de Hack The Box, VulnHub y PortSwigger. Este proyecto se basa en la base de datos y tutoriales proporcionados por el trabajo de @S4vitar.
 
 ## 🔨 Características
-- Búsqueda de máquinas por nombre (`-m`, `--machine`).
-- Actualización del archivo `infosecmachines.json` (`-u`, `--update`).
-- Información del script y ayuda (`-h`, `--help`).
-- Versión del script (`-v`, `--version`).
-- Autocompletado opcional para la flag `-m`.
+* Búsqueda de máquinas por nombre (`-m`, `--machine`).
+* Actualización del archivo `infosecmachines.json` (`-u`, `--update`).
+* Información del *script* y ayuda (`-h`, `--help`).
+* Versión del *script* (`-v`, `--version`).
+* Autocompletado opcional para la *flag* `-m`.
 
-## Instalación
+## 💾 Instalación
+
 ### Dependencias:
-- curl
-- jq
-- md5sum
-- tput
-- figlet
+* `curl`
+* `jq`
+* `md5sum`
+* `tput`
+* `figlet`
 
-### Instalación:
+### Instrucciones:
 ```bash
 # Clonar el repositorio
-git clone https://github.com/lukatinarelli/HTBmachines.git
+git clone [https://github.com/lukatinarelli/HTBmachines.git](https://github.com/lukatinarelli/HTBmachines.git)
 cd HTBmachines
 
 # Dar permisos de ejecución
 chmod +x htbmachines.sh
-```
-
-Puedes añadir la ruta del repo en tu PATH para ejecutar el script con `htbmachines.sh` desde cualquier directorio.
-
-### Autocompletado (opcional)
-Si quieres autocompletado usa el siguiente comando:
-```bash
-source .htb-autocomplete
-```
-
-> [!Note]
-> Si quieres el autocompletado permanente, añade `source .htb-autocomplete` a tu `~/.zshrc` o `~/.bashrc`
-
-
-## Uso
-```bash
-# Buscar una máquina
-htbmachines.sh -m <nombre>
-
-# Actualizar el archivo de datos
-$ ./htbmachines.sh -u
-
-# Mostrar ayuda
-$ ./htbmachines.sh -h
-
-# Mostrar versión
-$ ./htbmachines.sh -v
-```
-
-
-## Licencia
-Este proyecto está bajo la licencia [MIT License](LICENSE).
