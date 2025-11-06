@@ -16,6 +16,14 @@
   <img alt="HTB" src="https://img.shields.io/badge/HackTheBox-111927?style=flat&logo=Hack%20The%20Box&logoColor=9FEF00">
 </p>
 
+# Índice
+* []
+* []
+* []
+* []
+* [Licencia](#licencia)
+
+
 
 Script en Bash para consultar información de máquinas de Hack The Box a partir del archivo `infosecmachines.json`.
 
