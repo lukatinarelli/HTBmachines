@@ -52,7 +52,7 @@ HTBMachines es un **potente *script* en Bash** diseñado para **consultar inform
 ### Instrucciones:
 ```bash
 # Clonar el repositorio
-git clone [https://github.com/lukatinarelli/HTBmachines.git](https://github.com/lukatinarelli/HTBmachines.git)
+git clone https://github.com/lukatinarelli/HTBmachines.git
 cd HTBmachines
 
 # Dar permisos de ejecución
