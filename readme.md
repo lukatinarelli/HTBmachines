@@ -17,12 +17,14 @@
 </p>
 
 # Índice
-* []
+* [Introducción](#introducción)
 * []
 * []
 * []
 * [Licencia](#licencia)
 
+# Introducción
+MIT License.
 
 
 Script en Bash para consultar información de máquinas de Hack The Box a partir del archivo `infosecmachines.json`.
