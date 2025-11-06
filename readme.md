@@ -1,6 +1,25 @@
-# HTBmachines
+<pre>
+ █████   █████ ███████████  ███████████                                    █████       ███                             
+░░███   ░░███ ░░███░░░░░███░█░░░███░░░█                                   ░░███       ░░░                              
+ ░███    ░███  ░███    ░███░   ░███  ░  █████████████    ██████    ██████  ░███████   ████  ████████    ██████   █████ 
+ ░███████████  ░██████████     ░███    ░░███░░███░░███  ░░░░░███  ███░░███ ░███░░███ ░░███ ░░███░░███  ███░░███ ███░░  
+ ░███░░░░░███  ░███░░░░░███    ░███     ░███ ░███ ░███   ███████ ░███ ░░░  ░███ ░███  ░███  ░███ ░███ ░███████ ░░█████ 
+ ░███    ░███  ░███    ░███    ░███     ░███ ░███ ░███  ███░░███ ░███  ███ ░███ ░███  ░███  ░███ ░███ ░███░░░   ░░░░███
+ █████   █████ ███████████     █████    █████░███ █████░░████████░░██████  ████ █████ █████ ████ █████░░██████  ██████ 
+░░░░░   ░░░░░ ░░░░░░░░░░░     ░░░░░    ░░░░░ ░░░ ░░░░░  ░░░░░░░░  ░░░░░░  ░░░░ ░░░░░ ░░░░░ ░░░░ ░░░░░  ░░░░░░  ░░░░░░
+</pre>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/STATUS-EN%20DESAROLLO-green">
+  <img alt="GitHub License" src="https://img.shields.io/github/license/lukatinarelli/HTBmachines?style=flat&color=red">
+  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/lukatinarelli/HTBmachines?style=flat">
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/lukatinarelli/HTBmachines">
+</p>
+
 
 Script en Bash para consultar información de máquinas de Hack The Box a partir del archivo `infosecmachines.json`.
+
+
 
 ## Características
 - Búsqueda de máquinas por nombre (`-m`, `--machine`).
@@ -10,6 +29,11 @@ Script en Bash para consultar información de máquinas de Hack The Box a partir
 - Autocompletado opcional para la flag `-m`.
 
 ## Instalación
+Dependencias:
+- curl
+- awk
+- js-beautify
+
 ```bash
 # Clonar el repositorio
 $ git clone https://github.com/lukatinarelli/HTBmachines.git
