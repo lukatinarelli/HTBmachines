@@ -27,7 +27,7 @@
 ---
 
 ## 📜 Introducción
-HTBMachines es un **potente *script* en Bash** diseñado para **consultar información detallada** sobre máquinas de Hack The Box, VulnHub y PortSwigger. Este proyecto se basa en la base de datos y tutoriales proporcionados por el trabajo de @S4vitar.
+HTBMachines es un **potente *script* en Bash** diseñado para **consultar información detallada** sobre máquinas de Hack The Box, VulnHub y PortSwigger. Este proyecto se basa en la base de datos y tutoriales proporcionados por el trabajo de **[@S4vitar](https://github.com/S4vitar)**.
 
 ---
 
