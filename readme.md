@@ -63,14 +63,23 @@ chmod +x htbmachines.sh
 > Puedes añadir la ruta del repo en tu **PATH** para ejecutar el script con `htbmachines.sh` desde cualquier directorio.
 
 ### Autocompletado (opcional)
-Si quieres autocompletado usa el siguiente comando:
+Hemos separado la lógica en dos archivos para máxima compatibilidad y evitar bugs raros:
 
-```Bash
-source .htb-autocomplete
+| Shell | Archivo a Usar |
+| :---: | :--- |
+| **Zsh** | `.htb-autocomplete.zsh` |
+| **Bash** | `.htb-autocomplete.bash` |
+
+Para habilitarlo, usa el siguiente comando con el archivo que corresponda a tu shell:
+```bash
+source .htb-autocomplete.<tu_shell>
 ```
-
+#### Ejemplo: 
+```bash
+source .htb-autocomplete.zsh
+```
 > [!NOTE]
-> Si quieres el autocompletado permanente, añade `source .htb-autocomplete` a tu `~/.zshrc` o `~/.bashrc`.
+> Si quieres que el autocompletado sea permanente, añade la línea source correspondiente a tu archivo de configuración (~/.zshrc o ~/.bashrc).
 
 ---
 
@@ -85,9 +94,25 @@ source .htb-autocomplete
 
 ---
 
+## 🔧 Cosas por mejorar (Tareas)
+
+Este es el *checklist* de funcionalidades y mejoras planificadas para las próximas versiones:
+
+- [ ] **Filtros:** Añadir más filtros como el de -os (sistema operativo), -d (dificultad)...
+- [ ] **Autocompletado:** Solucionar el fallo al usar comillas en los nombres de máquina.
+- [ ] **Ergonomía:** Implementar sugerencias de nombres ("¿Quieres decir: ...") si la máquina no es encontrada.
+- [ ] **Metadatos:** Añadir un nuevo campo `resuelta` a la base de datos JSON.
+- [ ] **Documentación:** Mostrar la ayuda y el uso correcto para cada *flag* individual (ej. `htbmachines.sh -m -h`).
+- [X] **UX (User Experience):** Añadir colores en la salida del comando de búsqueda (`-m`).
+- [ ] **Mantenimiento:** Implementar un sistema básico de *logs*.
+- [ ] **Automatización:** Si al filtrar el resultado solo hay una máquina, mostrar la información de esa máquina automáticamente.
+- [ ] **Interactivo:** Desarrollar un modo interactivo con lectura de teclado para navegación.
+
+---
+
 ## 🌟 Créditos
 
-Este script se creó como parte del **curso de Hack4U** impartido por **[@S4vitar](https://github.com/S4vitar)**. La base de datos y los tutoriales utilizados son propiedad intelectual de **@S4vitar**.
+Este script se creó como parte del **curso de Hack4U** impartido por **[@S4vitar](https://github.com/S4vitar)**. La base de datos y los tutoriales utilizados son propiedad intelectual de **S4vitar**.
 
 > [!CAUTION]
 > **Nota Importante:** Este proyecto está destinado exclusivamente para **fines educativos** en el contexto del **Hacking Ético**.
