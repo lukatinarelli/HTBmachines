@@ -17,8 +17,8 @@
 </p>
 
 # Índice
-* [Introducción](#introducción)
-* [Características](#Características)
+* [Introducción](#-introducción)
+* [Características](#-características)
 * []
 * []
 * [Licencia](#licencia)
