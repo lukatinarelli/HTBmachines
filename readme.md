@@ -17,16 +17,19 @@
 </p>
 
 ## 📚 Índice
-- [Introducción](#introducción)
-- [Características](#características)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Licencia](#licencia)
+- [Introducción](-#introducción)
+- [Características](#-características)
+- [Instalación](#-instalación)
+- [Uso](#-uso)
+- [Créditos](#-créditos)
+- [Licencia](#-licencia)
 
 ---
 
 ## 📜 Introducción
 HTBMachines es un **potente *script* en Bash** diseñado para **consultar información detallada** sobre máquinas de Hack The Box, VulnHub y PortSwigger. Este proyecto se basa en la base de datos y tutoriales proporcionados por el trabajo de @S4vitar.
+
+---
 
 ## 🔨 Características
 * Búsqueda de máquinas por nombre (`-m`, `--machine`).
@@ -34,6 +37,8 @@ HTBMachines es un **potente *script* en Bash** diseñado para **consultar inform
 * Información del *script* y ayuda (`-h`, `--help`).
 * Versión del *script* (`-v`, `--version`).
 * Autocompletado opcional para la *flag* `-m`.
+
+---
 
 ## 💾 Instalación
 
@@ -52,3 +57,42 @@ cd HTBmachines
 
 # Dar permisos de ejecución
 chmod +x htbmachines.sh
+```
+
+> [!Note]
+> Consejo: Puedes añadir la ruta del repo en tu **PATH** para ejecutar el script con `htbmachines.sh` desde cualquier directorio.
+
+### Autocompletado (opcional)
+Si quieres autocompletado usa el siguiente comando:
+
+```Bash
+source .htb-autocomplete.zsh
+```
+
+> [!Note]
+> Si quieres el autocompletado permanente, añade `source .htb-autocomplete.zsh` a tu `~/.zshrc` o `~/.bashrc`.
+
+---
+
+## 🚀 Uso
+
+| Argumento Corto | Argumento Largo | Descripción |
+| :-------------: | :-------------: | :---------- |
+| `-m` | `--machine` | Busca información detallada sobre una máquina de HTB, VulnHub o PortSwigger. |
+| `-u` | `--update` | Actualiza el archivo de datos principal (`infosecmachines.json`). |
+| `-h` | `--help` | Muestra el menú de ayuda e información del script. |
+| `-v` | `--version` | Muestra la versión actual del script. |
+
+---
+
+## 🌟 Créditos
+
+Este script se creó como parte del **curso de Hack4U** impartido por **[@S4vitar](https://github.com/S4vitar)**. La base de datos y los tutoriales utilizados son propiedad intelectual de **@S4vitar**.
+
+> [!CAUTION]
+> **Nota Importante:** Este proyecto está destinado exclusivamente para **fines educativos** en el contexto del **Hacking Ético**.
+
+---
+
+## ⚖️ Licencia
+Este proyecto está bajo la [Licencia MIT](LICENSE).
