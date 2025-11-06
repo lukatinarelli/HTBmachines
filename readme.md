@@ -36,7 +36,7 @@ HTBMachines es un **potente *script* en Bash** diseñado para **consultar inform
 * Actualización del archivo `infosecmachines.json` (`-u`, `--update`).
 * Información del *script* y ayuda (`-h`, `--help`).
 * Versión del *script* (`-v`, `--version`).
-* Autocompletado opcional para la *flag* `-m`.
+* Autocompletado opcional.
 
 ---
 
