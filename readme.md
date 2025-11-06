@@ -19,7 +19,7 @@
 # Índice
 * [Introducción](#-introducción)
 * [Características](#-características)
-* []
+* [Instalación](#Instalación)
 * []
 * [Licencia](#licencia)
 
