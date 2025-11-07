@@ -18,6 +18,7 @@
 
 ## 📚 Índice
 - [Introducción](#-introducción)
+- [Aviso Importante ⚠️](#%EF%B8%8F-aviso-importante-cambio-de-la-base-de-datos-api)
 - [Características](#-características)
 - [Instalación](#-instalación)
 - [Uso](#-uso)
@@ -49,7 +50,7 @@ Para que el script funcione, debes proporcionar tu **cadena de *cookies*** de se
 #### Copiar el comando cURL completo
 Esta es la forma más robusta, ya que copia todas las cabeceras necesarias:
 
-1.  Inicia sesión en **hackingvault.com**.
+1.  Inicia sesión en **[hackingvault.com](https://hackingvault.com/)**.
 2.  Abre F12 (Herramientas de Desarrollador) y ve a la pestaña **`Network`**.
 3.  Filtra por **Fetch/XHR**.
 4.  Busca la petición a `tutorials?page=X&limit=12` y haz clic derecho.
