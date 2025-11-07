@@ -116,6 +116,8 @@ source .htb-autocomplete.zsh
 | Argumento Corto | Argumento Largo | Descripción |
 | :-------------: | :-------------: | :---------- |
 | `-m` | `--machine` | Busca información detallada sobre una máquina de HTB, VulnHub o PortSwigger. |
+| `-i` | `--ip` | Buscar máquinapor dirección IP. |
+| `-d` | `--difficulty` | Filtar máquinas por dificultad. |
 | `-u` | `--update` | Actualiza el archivo de datos principal (`infosecmachines.json`). |
 | `-h` | `--help` | Muestra el menú de ayuda e información del script. |
 | `-v` | `--version` | Muestra la versión actual del script. |
@@ -130,7 +132,7 @@ Este es el *checklist* de funcionalidades y mejoras planificadas para las próxi
 - [ ] **Autocompletado:** Solucionar el fallo al usar comillas en los nombres de máquina.
 - [ ] **Ergonomía:** Implementar sugerencias de nombres ("¿Quieres decir: ...") si la máquina no es encontrada.
 - [ ] **Metadatos:** Añadir un nuevo campo `resuelta` a la base de datos JSON.
-- [ ] **Documentación:** Mostrar la ayuda y el uso correcto para cada *flag* individual (ej. `htbmachines.sh -m -h`).
+- [ ] **Documentación:** Mostrar la ayuda y el uso correcto para cada *flag* individual.
 - [X] **UX (User Experience):** Añadir colores en la salida del comando de búsqueda (`-m`).
 - [ ] **Mantenimiento:** Implementar un sistema básico de *logs*.
 - [ ] **Automatización:** Si al filtrar el resultado solo hay una máquina, mostrar la información de esa máquina automáticamente.
