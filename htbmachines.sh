@@ -19,7 +19,7 @@ function ctrl_c() {
     tput cnorm && exit 1
 }
 trap ctrl_c INT
--
+
 # Dependencias
 function checkDependencies() {
     for cmd in curl jq md5sum tput figlet; do
@@ -135,20 +135,21 @@ function find_machine() {
 
 
 # Extraer campos de la máquina
-function extract_fields() { # platform: (if (.platform//"") != "" then .platform else "Plataforma no indicada" end),
+function extract_fields() { 
     map_output=$(printf '%s' "$machine_json" | jq -r '
     {
         nombre: (if (.nombre//"") != "" then .nombre else "No indicado" end),
         sistemaOperativo: (if (.sistemaOperativo//"") != "" then .sistemaOperativo else "No indicado" end),
         ip: (if (.ip//"") != "" then .ip else "No indicada" end),
         dificultad: (if (.dificultad//"") != "" then .dificultad else "No indicada" end),
+        platform: (if (.platform//"") != "" then .platform else "Plataforma no indicada" end),
         videoUrl: (if (.videoUrl//"") != "" then .videoUrl else "No hay vídeo disponible" end),
         tecnicas: (if (try (.tecnicas|length) catch 0) == 0 then "No indicado"
                     elif (try (.tecnicas|type) catch "null") == "array" then (.tecnicas|join("\n"))
-                    else (.tecnicas//"No indicado") end),
+                    else (.tecnicas//"No indicada") end),
         certificaciones: (if (try (.certificaciones|length) catch 0) == 0 then "No indicado"
                         elif (try (.certificaciones|type) catch "null") == "array" then (.certificaciones|join("\n"))
-                        else (.certificaciones//"No indicado") end)
+                        else (.certificaciones//"No indicada") end)
     }
     | to_entries[]
     | "\(.key)\u001f\(.value|@base64)"
@@ -157,7 +158,7 @@ function extract_fields() { # platform: (if (.platform//"") != "" then .platform
     while IFS=$'\x1f' read -r key b64; do
     value=$(printf '%s' "$b64" | base64 --decode 2>/dev/null || printf '%s' "$b64" | base64 -d 2>/dev/null)
     case "$key" in
-        nombre|sistemaOperativo|ip|dificultad|videoUrl|tecnicas|certificaciones) # |platform
+        nombre|sistemaOperativo|ip|dificultad|platform|videoUrl|tecnicas|certificaciones)
         declare -g "$key"="$value"
         ;;
     esac
@@ -192,9 +193,9 @@ function print_machine_info() {
     echo -e "${dificultad_color[$dificultad]:-${grayColour}}$dificultad${endColour}"
 
     # Plataforma
-    # declare -A platform_color=( ["HackTheBox"]=$greenColour ["VulnHub"]=$turquoiseColour ["PortSwigger"]=$orangeColour )
-    # echo -ne "${blueColour}Plataforma:${endColour} "
-    # echo -e "${platform_color[$platform]:-${redColour}}$platform${endColour}"
+    declare -A platform_color=( ["HackTheBox"]=$greenColour ["VulnHub"]=$turquoiseColour ["PortSwigger"]=$orangeColour )
+    echo -ne "${blueColour}Plataforma:${endColour} "
+    echo -e "${platform_color[$platform]:-${redColour}}$platform${endColour}"
 
     # Certificaciones
     if [ $(echo "$certificaciones" | grep -cve '^\s*$') -gt 1 ]; then echo -e "${blueColour}Certificaciones:${endColour}"; else echo -e "${blueColour}Certificación:${endColour}"; fi
@@ -204,7 +205,6 @@ function print_machine_info() {
     done <<< "$certificaciones"
 
     # Técnicas
-    if [ $(echo "$tecnicas" | grep -cve '^\s*$') -gt 1 ]; then echo -e "${blueColour}Técnicas:${endColour}"; else echo -e "${blueColour}Técnica:${endColour}"; fi
     [ $(echo "$tecnicas" | grep -cve '^\s*$') -gt 1 ] && echo -e "${blueColour}Técnicas:${endColour}" || echo -e "${blueColour}Técnica:${endColour}"
 
     while read -r tech; do
