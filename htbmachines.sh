@@ -120,24 +120,29 @@ function validate_json() {
 }
 
 
-# Buscar máquina por nombre
+# Buscar máquina por CUALQUIER campo de JSON
 function find_machine() {
-    local search_name="$1"
+    local arg="$1"
+    local search_name="$2"
+
     search_name="$(printf '%s' "$search_name" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
     local machine_json
-    machine_json=$(jq -r --arg nombre "$search_name" '
+    machine_json=$(jq -r \
+        --arg search_val "$search_name" \
+        --arg field_name "$arg" \
+        '
         .tutorials[]
         | select(
-            ((.nombre // "") | gsub("^[\\s]+|[\\s]+$";"") | ascii_downcase)
+            ((.[$field_name] // "") | gsub("^[\\s]+|[\\s]+$";"") | ascii_downcase)
             ==
-            (($nombre // "") | gsub("^[\\s]+|[\\s]+$";"") | ascii_downcase)
+            (($search_val // "") | gsub("^[\\s]+|[\\s]+$";"") | ascii_downcase)
         )
     ' "${ruta}/infosecmachines.json")
 
     if [ -z "$machine_json" ]; then
         # REDIRIGE EL MENSAJE DE ERROR A STDERR
-        echo -e "\n${redColour}[!]${endColour} La máquina proporcionada no existe.\n" >&2
+        echo -e "\n${redColour}[!]${endColour} La máquina proporcionada no existe o no coincide.\n" >&2
         return 1
     fi
 
@@ -231,7 +236,7 @@ function print_machine_info() {
 function searchMachine() {
     validate_json
 
-    machine_json=$(find_machine "$1") || return
+    machine_json=$(find_machine "$1" "$2") || return
 
     extract_fields "$machine_json"
 
@@ -249,6 +254,7 @@ function searchMachine() {
 
 machine_flag=0
 ip_flag=0
+difficulty_flag=0
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -275,6 +281,21 @@ while [[ $# -gt 0 ]]; do
                 echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
                 exit 1
             fi
+            ip="$1"
+            shift
+            ;;
+        -d|--difficulty)
+            difficulty_flag=1
+            shift
+            if [[ $# -eq 0 || "$1" == -* ]]; then
+                echo -e "\n${redColour}[!]${endColour} La opción '-d' requiere un argumento."
+                echo -e "${yellowColour}[+] Uso:${endColour} htbmachines.sh -m [dificultad]"
+
+                echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
+                exit 1
+            fi
+            difficulty="$1"
+            shift
             ;;
         -u|--update)
             updateFiles
@@ -295,9 +316,11 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ $machine_flag -eq 1 ]]; then
-    searchMachine "$machineName"
+    searchMachine "nombre" "$machineName"
 elif [[ $ip_flag -eq 1 ]]; then
-    searchMachine "$ip"
+    searchMachine "ip" "$ip"
+elif [[ difficulty_flag -eq 1 ]]; then
+    searchMachine "dificultad" "$difficulty"
 else
     echo -e "\n${redColour}[!]${endColour} ${grayColour}Modo de empleo: htbmachines.sh [-o sistema] [-d dificultad]...${endColour}"
     echo -e "${yellowColour}[+]${endColour}${grayColour} Pruebe 'htbmachines.sh -h' para ayuda.${endColour}\n"
