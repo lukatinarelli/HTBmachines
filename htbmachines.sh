@@ -66,32 +66,32 @@ function helpPanel(){
     echo -e "${yellowColour}[+]${endColour} Web infosecmachines: ${blueColour}https://infosecmachines.io/${endColour}"
     echo -e "\n${yellowColour}[+]${endColour} Github del proyecto: ${blueColour}https://github.com/lukatinarelli/HTBmachines${endColour}"
 
+    exit 0
 }
-
 
 # Descargar o actualizar ficheros
 function updateFiles() {
     tput civis
     if [ -f "${ruta}/infosecmachines.json" ]; then
         echo -e "\n${yellowColour}[*]${endColour}${grayColour} Comprobando si hay actualizaciones...${endColour}"
-        remote_hash=$(curl -sSfL "$main_url" | jq . | md5sum | cut -d' ' -f1) || {
+        remote_hash=$(curl -sSfL 'https://hackingvault.com/api/tutorials?page=1&limit=1000' -H 'accept: */*' -b '__Host-next-auth.csrf-token=b1f654747be1e0e691eae6e67cf7b74912ccb65d3f9b805c08a7451c451b8a6f%7Cd830936e87eed8d3435dea1a2e2faddd5d1b74128ade22696160c3caac4ca9ef; __Secure-next-auth.callback-url=https%3A%2F%2Fhackingvault.com; cf_clearance=ZjedZMI.6jy4n0Rg0HHU_Iit2Vd96FDHsnfSllDGibU-1762446016-1.2.1.1-jrVMEdpY10vquq6AMMPc9gxepEcOsPSIZcRWU2XUPGIvL2.HEppWg4EZFgOpn9Z_HfqsicklhD2fXm0nLgh8mZmlihJ7r0vjXn5txWAYJJGHs7w7urZCbvmDedHIy9Ysk41EbhqGYCIAWMeQk_iYG0D5CeZ3oML0Wgy2mKihKknf_23Nf1szisdMh6vr11D4lF3nRrdfkeE5OeBSN3xrswLIG3i43GN.9lwPcPeCjYI; __Secure-next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..loBIWj3uaNlObTO0.tthhbWA9moEj1e8XQ_uceYDkVurmj0sJVItfcGyxlT5lW6xzFPDS-w-u6y4PxXNSUVyE8IcXpYAMz55-jQy9GlgvdSXALtoaqk0sJ2CdTFzjZaD_QqsLnHfRB0rmdTdygUVV9x7ec71DfLnyA8_b5Z2XYrNR33ypmS1hl2PeCo_JMu9AR5Oq2GikQmDWxPvWDOrP1Ijb1jCQDw93on-O-CzVQHWJshb4SiwyW9UGIsASGJfM7L1P2geWVSpzMBIVjMjPNHkevmT79cb3MS6yh72Pao6R97TNnHIkkBxNitVC9uGxGL-dkF2ukD6FmVSWTiXZomc.3t7RF80C43piwzPH3LPTxw' -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36' | jq . | md5sum | cut -d' ' -f1) || {
             echo -e "\n${redColour}[!] Error: no se pudo obtener el recurso remoto.${endColour}"
             tput cnorm && return 1
         }
         local_hash=$(md5sum "${ruta}/infosecmachines.json" | cut -d' ' -f1 2>/dev/null || echo "")
         if [ "$remote_hash" != "$local_hash" ]; then
-            curl --progress-bar "$main_url" | jq . > "${ruta}/infosecmachines.json"
+            curl --progress-bar 'https://hackingvault.com/api/tutorials?page=1&limit=1000' -H 'accept: */*' -b '__Host-next-auth.csrf-token=b1f654747be1e0e691eae6e67cf7b74912ccb65d3f9b805c08a7451c451b8a6f%7Cd830936e87eed8d3435dea1a2e2faddd5d1b74128ade22696160c3caac4ca9ef; __Secure-next-auth.callback-url=https%3A%2F%2Fhackingvault.com; cf_clearance=ZjedZMI.6jy4n0Rg0HHU_Iit2Vd96FDHsnfSllDGibU-1762446016-1.2.1.1-jrVMEdpY10vquq6AMMPc9gxepEcOsPSIZcRWU2XUPGIvL2.HEppWg4EZFgOpn9Z_HfqsicklhD2fXm0nLgh8mZmlihJ7r0vjXn5txWAYJJGHs7w7urZCbvmDedHIy9Ysk41EbhqGYCIAWMeQk_iYG0D5CeZ3oML0Wgy2mKihKknf_23Nf1szisdMh6vr11D4lF3nRrdfkeE5OeBSN3xrswLIG3i43GN.9lwPcPeCjYI; __Secure-next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..loBIWj3uaNlObTO0.tthhbWA9moEj1e8XQ_uceYDkVurmj0sJVItfcGyxlT5lW6xzFPDS-w-u6y4PxXNSUVyE8IcXpYAMz55-jQy9GlgvdSXALtoaqk0sJ2CdTFzjZaD_QqsLnHfRB0rmdTdygUVV9x7ec71DfLnyA8_b5Z2XYrNR33ypmS1hl2PeCo_JMu9AR5Oq2GikQmDWxPvWDOrP1Ijb1jCQDw93on-O-CzVQHWJshb4SiwyW9UGIsASGJfM7L1P2geWVSpzMBIVjMjPNHkevmT79cb3MS6yh72Pao6R97TNnHIkkBxNitVC9uGxGL-dkF2ukD6FmVSWTiXZomc.3t7RF80C43piwzPH3LPTxw' -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36' | jq . > "${ruta}/infosecmachines.json"
             echo -e "\n${greenColour}[✓]${endColour}${grayColour} Fichero actualizado.${endColour}\n"
         else
             echo -e "\n${yellowColour}[+]${endColour}${grayColour} Ya está actualizado.${endColour}\n"
         fi
     else
         echo -e "\n${yellowColour}[*]${endColour}${grayColour} Descargando ficheros necesarios...${endColour}\n"
-        curl "$main_url" | jq . > "${ruta}/infosecmachines.json"
+        curl 'https://hackingvault.com/api/tutorials?page=1&limit=1000' -H 'accept: */*' -b '__Host-next-auth.csrf-token=b1f654747be1e0e691eae6e67cf7b74912ccb65d3f9b805c08a7451c451b8a6f%7Cd830936e87eed8d3435dea1a2e2faddd5d1b74128ade22696160c3caac4ca9ef; __Secure-next-auth.callback-url=https%3A%2F%2Fhackingvault.com; cf_clearance=ZjedZMI.6jy4n0Rg0HHU_Iit2Vd96FDHsnfSllDGibU-1762446016-1.2.1.1-jrVMEdpY10vquq6AMMPc9gxepEcOsPSIZcRWU2XUPGIvL2.HEppWg4EZFgOpn9Z_HfqsicklhD2fXm0nLgh8mZmlihJ7r0vjXn5txWAYJJGHs7w7urZCbvmDedHIy9Ysk41EbhqGYCIAWMeQk_iYG0D5CeZ3oML0Wgy2mKihKknf_23Nf1szisdMh6vr11D4lF3nRrdfkeE5OeBSN3xrswLIG3i43GN.9lwPcPeCjYI; __Secure-next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..loBIWj3uaNlObTO0.tthhbWA9moEj1e8XQ_uceYDkVurmj0sJVItfcGyxlT5lW6xzFPDS-w-u6y4PxXNSUVyE8IcXpYAMz55-jQy9GlgvdSXALtoaqk0sJ2CdTFzjZaD_QqsLnHfRB0rmdTdygUVV9x7ec71DfLnyA8_b5Z2XYrNR33ypmS1hl2PeCo_JMu9AR5Oq2GikQmDWxPvWDOrP1Ijb1jCQDw93on-O-CzVQHWJshb4SiwyW9UGIsASGJfM7L1P2geWVSpzMBIVjMjPNHkevmT79cb3MS6yh72Pao6R97TNnHIkkBxNitVC9uGxGL-dkF2ukD6FmVSWTiXZomc.3t7RF80C43piwzPH3LPTxw' -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36' | jq . > "${ruta}/infosecmachines.json"
         echo -e "\n${greenColour}[✓]${endColour}${grayColour} Todos los ficheros se han descargado.${endColour}\n"
     fi
 
-    tput cnorm
+    tput cnorm && exit 0
 }
 
 
@@ -101,7 +101,7 @@ mostrar_version() {
     echo -e "Licencia: ${redColour}MIT${endColour}"
 
     echo -e "\n${greenColour}Creado por: @lukatinarelli${endColour}"
-    echo -e "${redColour}Basado en el trabajo de @S4vitar${endColour}"
+    echo -e "${redColour}Basado en el trabajo de @S4vitar${endColour}\n"
     exit 0
 }
 
@@ -248,8 +248,7 @@ function searchMachine() {
 #                /____/        
 
 machine_flag=0
-update_flag=0
-help_flag=0
+ip_flag=0
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -259,19 +258,29 @@ while [[ $# -gt 0 ]]; do
             if [[ $# -eq 0 || "$1" == -* ]]; then
                 echo -e "\n${redColour}[!]${endColour} La opción '-m' requiere un argumento."
                 echo -e "${yellowColour}[+] Uso:${endColour} htbmachines.sh -m [nombre_maquina]"
+                
                 echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
                 exit 1
             fi
             machineName="$1"
             shift
             ;;
-        -u|--update)
-            update_flag=1
+        -i|--ip)
+            ip_flag=1
             shift
+            if [[ $# -eq 0 || "$1" == -* ]]; then
+                echo -e "\n${redColour}[!]${endColour} La opción '-i' requiere un argumento."
+                echo -e "${yellowColour}[+] Uso:${endColour} htbmachines.sh -m [ip_maquina]"
+
+                echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
+                exit 1
+            fi
+            ;;
+        -u|--update)
+            updateFiles
             ;;
         -h|--help)
-            help_flag=1
-            shift
+            helpPanel
             ;;
         -v|--version)
             mostrar_version
@@ -287,10 +296,8 @@ done
 
 if [[ $machine_flag -eq 1 ]]; then
     searchMachine "$machineName"
-elif [[ $update_flag -eq 1 ]]; then
-    updateFiles
-elif [[ $help_flag -eq 1 ]]; then
-    helpPanel
+elif [[ $ip_flag -eq 1 ]]; then
+    searchMachine "$ip"
 else
     echo -e "\n${redColour}[!]${endColour} ${grayColour}Modo de empleo: htbmachines.sh [-o sistema] [-d dificultad]...${endColour}"
     echo -e "${yellowColour}[+]${endColour}${grayColour} Pruebe 'htbmachines.sh -h' para ayuda.${endColour}\n"
