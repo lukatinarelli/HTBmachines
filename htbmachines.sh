@@ -1,6 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+# Variables globales
+ruta="$(cd "$(dirname "$0")" && pwd)"
+VERSION="1.0.0-dev" # Versión
+
 # Colores
 greenColour="\e[0;32m\033[1m"
 redColour="\e[0;31m\033[1m"
@@ -30,10 +34,6 @@ function checkDependencies() {
     done
 }
 checkDependencies
-
-# Variables globales
-main_url="https://hackingvault.com/api/tutorials?page=1&limit=1000"
-ruta="$(cd "$(dirname "$0")" && pwd)"
 
 
 # Panel de ayuda
@@ -92,6 +92,17 @@ function updateFiles() {
     fi
 
     tput cnorm
+}
+
+
+mostrar_version() {
+    echo -e "\n${yellowColour}htbmachines (Bash Script) v$VERSION ${endColour}"
+    echo -e "Base de datos: ${purpleColour}Hacking Vault${endColour}"
+    echo -e "Licencia: ${redColour}MIT${endColour}"
+
+    echo -e "\n${greenColour}Creado por: @lukatinarelli${endColour}"
+    echo -e "${redColour}Basado en el trabajo de @S4vitar${endColour}"
+    exit 0
 }
 
 
@@ -262,6 +273,10 @@ while [[ $# -gt 0 ]]; do
             help_flag=1
             shift
             ;;
+        -v|--version)
+            mostrar_version
+            ;;
+            
         *)
             echo -e "\n${redColour}[!]${endColour} ${grayColour}Opción desconocida: $1${endColour}"
             echo -e "${yellowColour}[+]${endColour} ${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}\n"
