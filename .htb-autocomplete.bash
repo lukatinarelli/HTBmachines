@@ -6,7 +6,7 @@ _htb_autocomplete() {
     # Cache una vez
     if [[ -z "${HTB_MACHINES_CACHE+x}" ]]; then
         if [[ -r infosecmachines.json ]]; then
-            mapfile -t HTB_MACHINES_CACHE < <(jq -r '.newData[] | .name' infosecmachines.json | sort -u)
+            mapfile -t HTB_MACHINES_CACHE < <(jq -r '.tutorials[] | .name' infosecmachines.json | sort -u)
         else
             HTB_MACHINES_CACHE=()
         fi

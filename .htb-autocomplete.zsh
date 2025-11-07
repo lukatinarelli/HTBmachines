@@ -10,7 +10,7 @@ _autocomplete_htbmachines() {
 
     if (( ! ${+htb_machines_cache} )); then
         if [[ -r infosecmachines.json ]]; then
-            htb_machines_cache=("${(@f)$(jq -r '.newData[] | .name' infosecmachines.json 2>/dev/null | sort -u)}")
+            htb_machines_cache=("${(@f)$(jq -r '.tutorials[] | .name' infosecmachines.json 2>/dev/null | sort -u)}")
         else
             htb_machines_cache=()
         fi

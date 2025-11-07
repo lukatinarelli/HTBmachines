@@ -47,10 +47,10 @@ function helpPanel(){
     echo -e "  ${purpleColour}m${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por nombre de máquina.${endColour}"
 
     #echo -e "\t${purpleColour}a${endColour}${turquoiseColour})${endColour} ${grayColour}Listar todas las máquinas.${endColour}"
-    echo -e "${purpleColour}i${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por dirección IP.${endColour}"
+    echo -e "  ${purpleColour}i${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por dirección IP.${endColour}"
     #echo -e "\t${purpleColour}l${endColour}${turquoiseColour})${endColour} ${grayColour}Listar todas las direcciones IP.${endColour}"
-    #echo -e "\t${purpleColour}o${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por el sistema operativo${endColour}: ${blackColour}Linux${endColour} |  {blueColour}Windows${endColour}"
-    echo -e "${purpleColour}d${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por la dificultad de una máquina${endColour}: ${greenColour}Easy${endColour} | ${yellowColour}Medium${endColour} | ${redColour}Hard${endColour} | ${purpleColour}Insane${endColour}"
+    echo -e "  ${purpleColour}o${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por el sistema operativo${endColour}: ${blackColour}Linux${endColour} | ${blueColour}Windows${endColour}"
+    echo -e "  ${purpleColour}d${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por la dificultad de una máquina${endColour}: ${greenColour}Easy${endColour} | ${yellowColour}Medium${endColour} | ${redColour}Hard${endColour} | ${purpleColour}Insane${endColour}"
     #echo -e "\t${purpleColour}t${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por técnica.${endColour}"
     #echo -e "\t${purpleColour}T${endColour}${turquoiseColour})${endColour} ${grayColour}Listar todas las técnicas.${endColour}"
     #echo -e "\t${purpleColour}c${endColour}${turquoiseColour})${endColour} ${grayColour}Buscar por certificación.${endColour}"
@@ -62,9 +62,9 @@ function helpPanel(){
     echo -e "  ${purpleColour}h${endColour}${turquoiseColour})${endColour} ${grayColour}Mostrar panel de ayuda.${endColour}"
     echo -e "  ${purpleColour}v${endColour}${turquoiseColour})${endColour} ${grayColour}Versión.${endColour}"
 
-    echo -e "\n${yellowColour}[+]${endColour} Excel: ${blueColour}https://docs.google.com/spreadsheets/d/1dzvaGlT_0xnT-PGO27Z_4prHgA8PHIpErmoWdlUrSoA/edit#gid=0${endColour}"
-    echo -e "${yellowColour}[+]${endColour} Web infosecmachines: ${blueColour}https://infosecmachines.io/${endColour}"
-    echo -e "\n${yellowColour}[+]${endColour} Github del proyecto: ${blueColour}https://github.com/lukatinarelli/HTBmachines${endColour}"
+    echo -e "\n${yellowColour}[+]${endColour} ${greenColour}Excel: ${blueColour}https://docs.google.com/spreadsheets/d/1dzvaGlT_0xnT-PGO27Z_4prHgA8PHIpErmoWdlUrSoA/edit#gid=0${endColour}"
+    echo -e "${yellowColour}[+]${endColour} ${redColour}Web infosecmachines: ${blueColour}https://infosecmachines.io/${endColour}"
+    echo -e "${yellowColour}[+]${endColour} ${blackColour}Github del proyecto: ${blueColour}https://github.com/lukatinarelli/HTBmachines${endColour}"
 
     exit 0
 }
@@ -150,8 +150,24 @@ function find_machine() {
 }
 
 
+function searchCombined() {
+    validate_json || return 1
+    
+    local filters=""
+    [[ -n "$os" ]] && filters+="| select((.sistemaOperativo // \"\") | ascii_downcase == \"${os,,}\") "
+    [[ -n "$difficulty" ]] && filters+="| select((.dificultad // \"\") | ascii_downcase == \"${difficulty,,}\") "
+    
+    local results
+    results=$(jq -r ".tutorials[] $filters" "${ruta}/infosecmachines.json")
+    
+    echo $results
+}
+
+
 # Extraer campos de la máquina
-function extract_fields() { 
+function extract_fields() {
+    local machine_json="$1"
+
     map_output=$(printf '%s' "$machine_json" | jq -r '
     {
         nombre: (if (.nombre//"") != "" then .nombre else "No indicado" end),
@@ -181,6 +197,19 @@ function extract_fields() {
     done <<< "$map_output"
 
     return 0
+}
+
+
+# Función para listar solo los nombres cuando hay múltiples coincidencias
+function print_machine_list() {
+    local list_json="$1"
+
+    echo -e "\n${yellowColour}[!] Se encontraron múltiples resultados. Seleccione uno:${endColour}\n"
+    
+    # Imprimimos los nombres, un resultado por línea
+    jq -r '.nombre' <<< "$machine_json" | sed 's/^/  - /'
+    
+    echo ""
 }
 
 
@@ -236,12 +265,19 @@ function print_machine_info() {
 function searchMachine() {
     validate_json
 
-    machine_json=$(find_machine "$1" "$2") || return
+    local machine_json
+    machine_json=$(find_machine "$1" "$2") || return 1 
 
-    extract_fields "$machine_json"
-
-    print_machine_info
+    if [ $(jq -s 'length' <<< "$machine_json") -gt 1 ]; then
+        print_machine_list "$machine_json" 
+        
+    elif [ $(jq -s 'length' <<< "$machine_json") -eq 1 ]; then
+        extract_fields "$machine_json"
+        print_machine_info "$machine_json"
+        
+    fi
 }
+
 
 # -----------------------------------------------------------------------------------------------------
 
@@ -254,6 +290,7 @@ function searchMachine() {
 
 machine_flag=0
 ip_flag=0
+os_flag=0
 difficulty_flag=0
 
 while [[ $# -gt 0 ]]; do
@@ -276,7 +313,7 @@ while [[ $# -gt 0 ]]; do
             shift
             if [[ $# -eq 0 || "$1" == -* ]]; then
                 echo -e "\n${redColour}[!]${endColour} La opción '-i' requiere un argumento."
-                echo -e "${yellowColour}[+] Uso:${endColour} htbmachines.sh -m [ip_maquina]"
+                echo -e "${yellowColour}[+] Uso:${endColour} htbmachines.sh -i [ip_maquina]"
 
                 echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
                 exit 1
@@ -284,12 +321,25 @@ while [[ $# -gt 0 ]]; do
             ip="$1"
             shift
             ;;
+        -o|--os)
+            os_flag=1
+            shift
+            if [[ $# -eq 0 || "$1" == -* ]]; then
+                echo -e "\n${redColour}[!]${endColour} La opción '-o' requiere un argumento."
+                echo -e "${yellowColour}[+] Uso:${endColour} htbmachines.sh -o [sistema operativo]"
+
+                echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
+                exit 1
+            fi
+            os="$1"
+            shift
+            ;;
         -d|--difficulty)
             difficulty_flag=1
             shift
             if [[ $# -eq 0 || "$1" == -* ]]; then
                 echo -e "\n${redColour}[!]${endColour} La opción '-d' requiere un argumento."
-                echo -e "${yellowColour}[+] Uso:${endColour} htbmachines.sh -m [dificultad]"
+                echo -e "${yellowColour}[+] Uso:${endColour} htbmachines.sh -d [dificultad]"
 
                 echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
                 exit 1
@@ -319,7 +369,9 @@ if [[ $machine_flag -eq 1 ]]; then
     searchMachine "nombre" "$machineName"
 elif [[ $ip_flag -eq 1 ]]; then
     searchMachine "ip" "$ip"
-elif [[ difficulty_flag -eq 1 ]]; then
+elif [[ $os_flag -eq 1 ]]; then
+    searchMachine "sistemaOperativo" "$os"
+elif [[ $difficulty_flag -eq 1 ]]; then
     searchMachine "dificultad" "$difficulty"
 else
     echo -e "\n${redColour}[!]${endColour} ${grayColour}Modo de empleo: htbmachines.sh [-o sistema] [-d dificultad]...${endColour}"
