@@ -1,9 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# ---------------------------
 # Colores
-# ---------------------------
 greenColour="\e[0;32m\033[1m"
 redColour="\e[0;31m\033[1m"
 blueColour="\e[0;34m\033[1m"
@@ -15,18 +13,14 @@ grayColour="\e[0;37m\033[1m"
 blackColour="\e[0;38;5;236m\033[1m"
 endColour="\033[0m\e[0m"
 
-# ---------------------------
-# Manejo Ctrl+C
-# ---------------------------
+# Ctrl+C
 function ctrl_c() {
     echo -e "\n\n${redColour}[!] Saliendo...${endColour}\n"
     tput cnorm && exit 1
 }
 trap ctrl_c INT
-
-# ---------------------------
-# Verificar dependencias
-# ---------------------------
+-
+# Dependencias
 function checkDependencies() {
     for cmd in curl jq md5sum tput figlet; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -37,15 +31,12 @@ function checkDependencies() {
 }
 checkDependencies
 
-# ---------------------------
 # Variables globales
-# ---------------------------
-main_url="https://infosecmachines.io/api/machines"
+main_url="https://hackingvault.com/api/tutorials?page=1&limit=1000"
 ruta="$(cd "$(dirname "$0")" && pwd)"
 
-# ---------------------------
+
 # Panel de ayuda
-# ---------------------------
 function helpPanel(){
     echo -e "\n${yellowColour}[+]${endColour} ${grayColour}Modo de empleo: htbmachines.sh [-o sistema] [-d dificultad]... ${endColour}"
     echo -e "${yellowColour}[+]${endColour} ${grayColour}Buscador de máquinas de HTB.${endColour}"
@@ -77,9 +68,8 @@ function helpPanel(){
 
 }
 
-# ---------------------------
+
 # Descargar o actualizar ficheros
-# ---------------------------
 function updateFiles() {
     tput civis
     if [ -f "${ruta}/infosecmachines.json" ]; then
@@ -90,18 +80,16 @@ function updateFiles() {
         }
         local_hash=$(md5sum "${ruta}/infosecmachines.json" | cut -d' ' -f1 2>/dev/null || echo "")
         if [ "$remote_hash" != "$local_hash" ]; then
-            curl -fL --progress-bar "$main_url" | jq . > "${ruta}/infosecmachines.json"
+            curl --progress-bar "$main_url" | jq . > "${ruta}/infosecmachines.json"
             echo -e "\n${greenColour}[✓]${endColour}${grayColour} Fichero actualizado.${endColour}\n"
         else
             echo -e "\n${yellowColour}[+]${endColour}${grayColour} Ya está actualizado.${endColour}\n"
         fi
     else
         echo -e "\n${yellowColour}[*]${endColour}${grayColour} Descargando ficheros necesarios...${endColour}\n"
-        curl -fL "$main_url" | jq . > "${ruta}/infosecmachines.json"
+        curl "$main_url" | jq . > "${ruta}/infosecmachines.json"
         echo -e "\n${greenColour}[✓]${endColour}${grayColour} Todos los ficheros se han descargado.${endColour}\n"
     fi
-
-    cp "${ruta}/infosecmachines_copy.json" "${ruta}/infosecmachines.json"
 
     tput cnorm
 }
@@ -120,18 +108,19 @@ function validate_json() {
     fi
 }
 
+
 # Buscar máquina por nombre
 function find_machine() {
     local search_name="$1"
     search_name="$(printf '%s' "$search_name" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
     local machine_json
-    machine_json=$(jq -r --arg name "$search_name" '
-        .newData[]
+    machine_json=$(jq -r --arg nombre "$search_name" '
+        .tutorials[]
         | select(
-            ((.name // "") | gsub("^[\\s]+|[\\s]+$";"") | ascii_downcase)
+            ((.nombre // "") | gsub("^[\\s]+|[\\s]+$";"") | ascii_downcase)
             ==
-            (($name // "") | gsub("^[\\s]+|[\\s]+$";"") | ascii_downcase)
+            (($nombre // "") | gsub("^[\\s]+|[\\s]+$";"") | ascii_downcase)
         )
     ' "${ruta}/infosecmachines.json")
 
@@ -141,26 +130,25 @@ function find_machine() {
         return 1
     fi
 
-    echo "$machine_json" # SOLO datos por STDOUT
+    echo "$machine_json"
 }
 
+
 # Extraer campos de la máquina
-function extract_fields() {
+function extract_fields() { # platform: (if (.platform//"") != "" then .platform else "Plataforma no indicada" end),
     map_output=$(printf '%s' "$machine_json" | jq -r '
     {
-        name: (if (.name//"") != "" then .name else "No indicado" end),
-        os: (if (.os//"") != "" then .os else "No indicado" end),
+        nombre: (if (.nombre//"") != "" then .nombre else "No indicado" end),
+        sistemaOperativo: (if (.sistemaOperativo//"") != "" then .sistemaOperativo else "No indicado" end),
         ip: (if (.ip//"") != "" then .ip else "No indicada" end),
-        state: (if (.state//"") != "" then .state else "No indicada" end),
-        video: (if (.video//"") != "" then .video else "No hay vídeo disponible" end),
-        platform: (if (.platform//"") != "" then .platform else "Plataforma no indicada" end),
-        description: (if (.description//"") != "" then .description else "No hay descripción" end),
-        techniques: (if (try (.techniques|length) catch 0) == 0 then "No indicado"
-                    elif (try (.techniques|type) catch "null") == "array" then (.techniques|join("\n"))
-                    else (.techniques//"No indicado") end),
-        certification: (if (try (.certification|length) catch 0) == 0 then "No indicado"
-                        elif (try (.certification|type) catch "null") == "array" then (.certification|join("\n"))
-                        else (.certification//"No indicado") end)
+        dificultad: (if (.dificultad//"") != "" then .dificultad else "No indicada" end),
+        videoUrl: (if (.videoUrl//"") != "" then .videoUrl else "No hay vídeo disponible" end),
+        tecnicas: (if (try (.tecnicas|length) catch 0) == 0 then "No indicado"
+                    elif (try (.tecnicas|type) catch "null") == "array" then (.tecnicas|join("\n"))
+                    else (.tecnicas//"No indicado") end),
+        certificaciones: (if (try (.certificaciones|length) catch 0) == 0 then "No indicado"
+                        elif (try (.certificaciones|type) catch "null") == "array" then (.certificaciones|join("\n"))
+                        else (.certificaciones//"No indicado") end)
     }
     | to_entries[]
     | "\(.key)\u001f\(.value|@base64)"
@@ -169,7 +157,7 @@ function extract_fields() {
     while IFS=$'\x1f' read -r key b64; do
     value=$(printf '%s' "$b64" | base64 --decode 2>/dev/null || printf '%s' "$b64" | base64 -d 2>/dev/null)
     case "$key" in
-        name|os|ip|state|video|platform|description|techniques|certification)
+        nombre|sistemaOperativo|ip|dificultad|videoUrl|tecnicas|certificaciones) # |platform
         declare -g "$key"="$value"
         ;;
     esac
@@ -178,60 +166,57 @@ function extract_fields() {
     return 0
 }
 
+
 # Mostar información de la máquina
 function print_machine_info() {
     echo -e "${greenColour}"
-    figlet -f slant "$name"
+    figlet -f slant "$nombre"
     echo -e "${endColour}"
 
     echo -e "${greenColour}[+]${endColour}${grayColour} Propiedades de la máquina:${endColour}\n"
 
     # Nombre
-    echo -e "${blueColour}Nombre:${endColour} ${grayColour}$name${endColour}"
+    echo -e "${blueColour}Nombre:${endColour} ${grayColour}$nombre${endColour}"
 
-    # OS con color
+    # OS
     declare -A os_color=( ["Linux"]=$blackColour ["Windows"]=$blueColour )
     echo -ne "${blueColour}OS:${endColour} "
-    echo -e "${os_color[$os]:-${grayColour}}$os${endColour}"
+    echo -e "${os_color[$sistemaOperativo]:-${grayColour}}$sistemaOperativo${endColour}"
 
     # IP
     echo -e "${blueColour}IP:${endColour} ${grayColour}$ip${endColour}"
 
-    # Dificultad con color
-    declare -A state_color=( ["Easy"]=$greenColour ["Medium"]=$yellowColour ["Hard"]=$redColour ["Insane"]=$purpleColour )
+    # Dificultad
+    declare -A dificultad_color=( ["Easy"]=$greenColour ["Medium"]=$yellowColour ["Hard"]=$redColour ["Insane"]=$purpleColour )
     echo -ne "${blueColour}Dificultad:${endColour} "
-    echo -e "${state_color[$state]:-${grayColour}}$state${endColour}"
+    echo -e "${dificultad_color[$dificultad]:-${grayColour}}$dificultad${endColour}"
 
-    # Plataforma con color
-    declare -A platform_color=( ["HackTheBox"]=$greenColour ["VulnHub"]=$turquoiseColour ["PortSwigger"]=$orangeColour )
-    echo -ne "${blueColour}Plataforma:${endColour} "
-    echo -e "${platform_color[$platform]:-${redColour}}$platform${endColour}"
+    # Plataforma
+    # declare -A platform_color=( ["HackTheBox"]=$greenColour ["VulnHub"]=$turquoiseColour ["PortSwigger"]=$orangeColour )
+    # echo -ne "${blueColour}Plataforma:${endColour} "
+    # echo -e "${platform_color[$platform]:-${redColour}}$platform${endColour}"
 
     # Certificaciones
-    if [ $(echo "$certification" | grep -cve '^\s*$') -gt 1 ]; then echo -e "${blueColour}Certificaciones:${endColour}"; else echo -e "${blueColour}Certificación:${endColour}"; fi
+    if [ $(echo "$certificaciones" | grep -cve '^\s*$') -gt 1 ]; then echo -e "${blueColour}Certificaciones:${endColour}"; else echo -e "${blueColour}Certificación:${endColour}"; fi
 
     while read -r cert; do
         [ -n "$cert" ] && echo -e "  ${purpleColour}-${endColour} $cert"
-    done <<< "$certification"
+    done <<< "$certificaciones"
 
     # Técnicas
-    if [ $(echo "$techniques" | grep -cve '^\s*$') -gt 1 ]; then echo -e "${blueColour}Técnicas:${endColour}"; else echo -e "${blueColour}Técnica:${endColour}"; fi
-    [ $(echo "$techniques" | grep -cve '^\s*$') -gt 1 ] && echo -e "${blueColour}Técnicas:${endColour}" || echo -e "${blueColour}Técnica:${endColour}"
+    if [ $(echo "$tecnicas" | grep -cve '^\s*$') -gt 1 ]; then echo -e "${blueColour}Técnicas:${endColour}"; else echo -e "${blueColour}Técnica:${endColour}"; fi
+    [ $(echo "$tecnicas" | grep -cve '^\s*$') -gt 1 ] && echo -e "${blueColour}Técnicas:${endColour}" || echo -e "${blueColour}Técnica:${endColour}"
 
     while read -r tech; do
         [ -n "$tech" ] && echo -e "  ${purpleColour}-${endColour} $tech"
-    done <<< "$techniques"
-
+    done <<< "$tecnicas"
 
     # YouTube
-    echo -e "${blueColour}YouTube:${endColour} ${redColour}$video${endColour}"
-
-    # Descripción
-    echo -e "${blueColour}Descripción:${endColour}\n${grayColour}$description${endColour}"
+    echo -e "${blueColour}YouTube:${endColour} ${redColour}$videoUrl${endColour}"
 }
 
 
-# Función busqueda por nombre
+# Función busqueda
 function searchMachine() {
     validate_json
 
@@ -242,7 +227,7 @@ function searchMachine() {
     print_machine_info
 }
 
-# ----------------------------------------------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------
 
 #      ________                
 #     / ____/ /___ _____ ______
@@ -250,7 +235,6 @@ function searchMachine() {
 #   / __/ / / /_/ / /_/ (__  ) 
 #  /_/   /_/\__,_/\__, /____/  
 #                /____/        
-#
 
 machine_flag=0
 update_flag=0

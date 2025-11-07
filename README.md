@@ -31,6 +31,33 @@ HTBMachines es un **potente *script* en Bash** diseñado para **consultar inform
 
 ---
 
+## ⚠️ Aviso Importante: Cambio de la Base de Datos (API)
+
+Este proyecto se concibió utilizando la API de **infosecmachines.io** (de [JavierMolines](https://github.com/JavierMolines/)), la cual permitía descargar la base de datos de máquinas sin autenticación.
+
+> [!CAUTION]
+> **CAMBIO RECIENTE.** El dominio `infosecmachines.io` ahora redirige a la nueva plataforma **hackingvault.com**. La API de la nueva web **NO permite la descarga de datos sin sesión iniciada.**
+
+**Esto implica que:**
+* El archivo `infosecmachines.json` **viene incluido en el repositorio** con la base de datos más reciente en el momento de la clonación. **No necesitas seguir estos pasos para usar el script.**
+* La **autenticación es obligatoria si deseas actualizar la Base de Datos (`-u`, `--update`)** para obtener nuevas máquinas, ya que la API de Hacking Vault requiere tu *cookie* de sesión.
+
+### 🔑 Instrucciones para Obtener el Token de Sesión
+
+Para que el script funcione, debes proporcionar tu **cadena de *cookies*** de sesión. El proceso es el siguiente:
+
+#### Copiar el comando cURL completo
+Esta es la forma más robusta, ya que copia todas las cabeceras necesarias:
+
+1.  Inicia sesión en **hackingvault.com**.
+2.  Abre F12 (Herramientas de Desarrollador) y ve a la pestaña **`Network`**.
+3.  Filtra por **Fetch/XHR**.
+4.  Busca la petición a `tutorials?page=X&limit=12` y haz clic derecho.
+5.  Selecciona **`Copy`** > **`Copy as cURL (bash)`**.
+6.  Al ejecutar el comando de actualización, el script te pedirá que pegues la cadena cURL en la consola.
+
+---
+
 ## 🔨 Características
 * Búsqueda de máquinas por nombre (`-m`, `--machine`).
 * Actualización del archivo `infosecmachines.json` (`-u`, `--update`).
