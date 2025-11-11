@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Variables globales
 ruta="$(cd "$(dirname "$0")" && pwd)"
-VERSION="1.0.0-dev" # Versión
+VERSION="1.1.3-dev" # Versión
 
 # Colores
 greenColour="\033[0;32m\033[1m"

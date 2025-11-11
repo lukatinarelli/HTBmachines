@@ -128,14 +128,14 @@ source .htb-autocomplete.zsh
 
 Este es el *checklist* de funcionalidades y mejoras planificadas para las próximas versiones:
 
-- [ ] **Filtros:** Añadir más filtros como el de -os (sistema operativo), -d (dificultad)...
+- [X] **Filtros:** Añadir más filtros como el de -os (sistema operativo), -d (dificultad)...
 - [ ] **Autocompletado:** Solucionar el fallo al usar comillas en los nombres de máquina.
 - [ ] **Ergonomía:** Implementar sugerencias de nombres ("¿Quieres decir: ...") si la máquina no es encontrada.
 - [ ] **Metadatos:** Añadir un nuevo campo `resuelta` a la base de datos JSON.
-- [ ] **Documentación:** Mostrar la ayuda y el uso correcto para cada *flag* individual.
+- [X] **Documentación:** Mostrar la ayuda y el uso correcto para cada *flag* individual.
 - [X] **UX (User Experience):** Añadir colores en la salida del comando de búsqueda (`-m`).
 - [ ] **Mantenimiento:** Implementar un sistema básico de *logs*.
-- [ ] **Automatización:** Si al filtrar el resultado solo hay una máquina, mostrar la información de esa máquina automáticamente.
+- [X] **Automatización:** Si al filtrar el resultado solo hay una máquina, mostrar la información de esa máquina automáticamente.
 - [ ] **Interactivo:** Desarrollar un modo interactivo con lectura de teclado para navegación.
 
 ---
