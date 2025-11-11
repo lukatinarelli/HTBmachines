@@ -6,23 +6,25 @@ ruta="$(cd "$(dirname "$0")" && pwd)"
 VERSION="1.0.0-dev" # Versión
 
 # Colores
-greenColour="\e[0;32m\033[1m"
-redColour="\e[0;31m\033[1m"
-blueColour="\e[0;34m\033[1m"
-yellowColour="\e[0;33m\033[1m"
-orangeColour="\e[0;38;5;208m\033[1m"
-purpleColour="\e[0;35m\033[1m"
-turquoiseColour="\e[0;36m\033[1m"
-grayColour="\e[0;37m\033[1m"
-blackColour="\e[0;38;5;236m\033[1m"
-endColour="\033[0m\e[0m"
+greenColour="\033[0;32m\033[1m"
+redColour="\033[0;31m\033[1m"
+blueColour="\033[0;34m\033[1m"
+yellowColour="\033[0;33m\033[1m"
+orangeColour="\033[0;38;5;208m\033[1m"
+purpleColour="\033[0;35m\033[1m"
+turquoiseColour="\033[0;36m\033[1m"
+grayColour="\033[0;37m\033[1m"
+blackColour="\033[0;38;5;236m\033[1m"
+endColour="\033[0m\033[0m"
 
 # Ctrl+C
 function ctrl_c() {
     echo -e "\n\n${redColour}[!] Saliendo...${endColour}\n"
-    tput cnorm && exit 1
+    exit 1
 }
 trap ctrl_c INT
+
+trap 'tput cnorm' EXIT
 
 # Dependencias
 function checkDependencies() {
@@ -72,11 +74,12 @@ function helpPanel(){
 # Descargar o actualizar ficheros
 function updateFiles() {
     tput civis
+    
     if [ -f "${ruta}/infosecmachines.json" ]; then
         echo -e "\n${yellowColour}[*]${endColour}${grayColour} Comprobando si hay actualizaciones...${endColour}"
         remote_hash=$(curl -sSfL 'https://hackingvault.com/api/tutorials?page=1&limit=1000' -H 'accept: */*' -b '__Host-next-auth.csrf-token=b1f654747be1e0e691eae6e67cf7b74912ccb65d3f9b805c08a7451c451b8a6f%7Cd830936e87eed8d3435dea1a2e2faddd5d1b74128ade22696160c3caac4ca9ef; __Secure-next-auth.callback-url=https%3A%2F%2Fhackingvault.com; cf_clearance=ZjedZMI.6jy4n0Rg0HHU_Iit2Vd96FDHsnfSllDGibU-1762446016-1.2.1.1-jrVMEdpY10vquq6AMMPc9gxepEcOsPSIZcRWU2XUPGIvL2.HEppWg4EZFgOpn9Z_HfqsicklhD2fXm0nLgh8mZmlihJ7r0vjXn5txWAYJJGHs7w7urZCbvmDedHIy9Ysk41EbhqGYCIAWMeQk_iYG0D5CeZ3oML0Wgy2mKihKknf_23Nf1szisdMh6vr11D4lF3nRrdfkeE5OeBSN3xrswLIG3i43GN.9lwPcPeCjYI; __Secure-next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..loBIWj3uaNlObTO0.tthhbWA9moEj1e8XQ_uceYDkVurmj0sJVItfcGyxlT5lW6xzFPDS-w-u6y4PxXNSUVyE8IcXpYAMz55-jQy9GlgvdSXALtoaqk0sJ2CdTFzjZaD_QqsLnHfRB0rmdTdygUVV9x7ec71DfLnyA8_b5Z2XYrNR33ypmS1hl2PeCo_JMu9AR5Oq2GikQmDWxPvWDOrP1Ijb1jCQDw93on-O-CzVQHWJshb4SiwyW9UGIsASGJfM7L1P2geWVSpzMBIVjMjPNHkevmT79cb3MS6yh72Pao6R97TNnHIkkBxNitVC9uGxGL-dkF2ukD6FmVSWTiXZomc.3t7RF80C43piwzPH3LPTxw' -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36' | jq . | md5sum | cut -d' ' -f1) || {
             echo -e "\n${redColour}[!] Error: no se pudo obtener el recurso remoto.${endColour}"
-            tput cnorm && return 1
+            return 1
         }
         local_hash=$(md5sum "${ruta}/infosecmachines.json" | cut -d' ' -f1 2>/dev/null || echo "")
         if [ "$remote_hash" != "$local_hash" ]; then
@@ -91,7 +94,7 @@ function updateFiles() {
         echo -e "\n${greenColour}[✓]${endColour}${grayColour} Todos los ficheros se han descargado.${endColour}\n"
     fi
 
-    tput cnorm && exit 0
+    exit 0
 }
 
 
@@ -150,17 +153,40 @@ function find_machine() {
 }
 
 
-function searchCombined() {
-    validate_json || return 1
+function searchCombined() { 
+    local search_args_string="$1"
+    local jq_filters=""
+    local machine_json
+    local key value
+
+    local oldIFS=$IFS
     
-    local filters=""
-    [[ -n "$os" ]] && filters+="| select((.sistemaOperativo // \"\") | ascii_downcase == \"${os,,}\") "
-    [[ -n "$difficulty" ]] && filters+="| select((.dificultad // \"\") | ascii_downcase == \"${difficulty,,}\") "
+    IFS=" "
+
+    for filter_pair in $search_args_string; do
+        IFS=':' read -r key value <<< "$filter_pair"
+
+        filter_fragment="((.[\"$key\"] // \"\") | sub(\"^[[:space:]]+|[[:space:]]+$\";\"\") | ascii_downcase) == (\"$value\" | ascii_downcase)"
+
+        if [[ -z "$jq_filters" ]]; then
+            jq_filters="$filter_fragment"
+        else
+            jq_filters="$jq_filters and $filter_fragment"
+        fi
+        
+    done
+
+    IFS=$oldIFS 
+
+    machine_json=$(jq -r ".tutorials[] | select($jq_filters)" "${ruta}/infosecmachines.json")
     
-    local results
-    results=$(jq -r ".tutorials[] $filters" "${ruta}/infosecmachines.json")
+    if [ -z "$machine_json" ]; then
+        echo -e "\n${redColour}[!]${endColour} No se encontró ninguna máquina con esos filtros combinados.\n" >&2
+        return 1
+    fi
     
-    echo $results
+    echo "$machine_json"
+    return 0 
 }
 
 
@@ -200,14 +226,13 @@ function extract_fields() {
 }
 
 
-# Función para listar solo los nombres cuando hay múltiples coincidencias
+# Listar nombres con múltiples coincidencias
 function print_machine_list() {
     local list_json="$1"
 
     echo -e "\n${yellowColour}[!] Se encontraron múltiples resultados. Seleccione uno:${endColour}\n"
     
-    # Imprimimos los nombres, un resultado por línea
-    jq -r '.nombre' <<< "$machine_json" | sed 's/^/  - /'
+    jq -r '.nombre' <<< "$list_json" | sed 's/^/  - /'
     
     echo ""
 }
@@ -225,22 +250,37 @@ function print_machine_info() {
     echo -e "${blueColour}Nombre:${endColour} ${grayColour}$nombre${endColour}"
 
     # OS
-    declare -A os_color=( ["Linux"]=$blackColour ["Windows"]=$blueColour )
+    case "$sistemaOperativo" in
+        Linux) os_color="$blackColour" ;;
+        Windows) os_color="$blueColour" ;;
+        *) os_color="$grayColour" ;;
+    esac
     echo -ne "${blueColour}OS:${endColour} "
-    echo -e "${os_color[$sistemaOperativo]:-${grayColour}}$sistemaOperativo${endColour}"
+    echo -e "${os_color}$sistemaOperativo${endColour}"
 
     # IP
     echo -e "${blueColour}IP:${endColour} ${grayColour}$ip${endColour}"
 
     # Dificultad
-    declare -A dificultad_color=( ["Easy"]=$greenColour ["Medium"]=$yellowColour ["Hard"]=$redColour ["Insane"]=$purpleColour )
+    case "$dificultad" in
+        Easy) dificultad_color="$greenColour" ;;
+        Medium) dificultad_color="$yellowColour" ;;
+        Hard) dificultad_color="$redColour" ;;
+        Insane) dificultad_color="$purpleColour" ;;
+        *) dificultad_color="$grayColour" ;;
+    esac
     echo -ne "${blueColour}Dificultad:${endColour} "
-    echo -e "${dificultad_color[$dificultad]:-${grayColour}}$dificultad${endColour}"
+    echo -e "${dificultad_color}$dificultad${endColour}"
 
     # Plataforma
-    declare -A platform_color=( ["HackTheBox"]=$greenColour ["VulnHub"]=$turquoiseColour ["PortSwigger"]=$orangeColour )
+    case "$platform" in
+        HackTheBox) platform_color="$greenColour" ;;
+        VulnHub) platform_color="$turquoiseColour" ;;
+        PortSwigger) platform_color="$orangeColour" ;;
+        *) platform_color="$redColour" ;;
+    esac
     echo -ne "${blueColour}Plataforma:${endColour} "
-    echo -e "${platform_color[$platform]:-${redColour}}$platform${endColour}"
+    echo -e "${platform_color}$platform${endColour}"
 
     # Certificaciones
     if [ $(echo "$certificaciones" | grep -cve '^\s*$') -gt 1 ]; then echo -e "${blueColour}Certificaciones:${endColour}"; else echo -e "${blueColour}Certificación:${endColour}"; fi
@@ -265,15 +305,19 @@ function print_machine_info() {
 function searchMachine() {
     validate_json
 
-    local machine_json
-    machine_json=$(find_machine "$1" "$2") || return 1 
+    # local machine_json
+    # machine_json=$(find_machine "$1" "$2") || return 1 
 
-    if [ $(jq -s 'length' <<< "$machine_json") -gt 1 ]; then
-        print_machine_list "$machine_json" 
+    local search_json
+    search_json=$(searchCombined "$1") || exit 1
+
+    if [ $(jq -s 'length' <<< "$search_json") -gt 1 ]; then
+        print_machine_list "$search_json" 
         
-    elif [ $(jq -s 'length' <<< "$machine_json") -eq 1 ]; then
-        extract_fields "$machine_json"
-        print_machine_info "$machine_json"
+    elif [ $(jq -s 'length' <<< "$search_json") -eq 1 ]; then
+        
+        extract_fields "$search_json"
+        print_machine_info "$search_json"
         
     fi
 }
@@ -288,15 +332,11 @@ function searchMachine() {
 #  /_/   /_/\__,_/\__, /____/  
 #                /____/        
 
-machine_flag=0
-ip_flag=0
-os_flag=0
-difficulty_flag=0
+SEARCH_ARGS=""
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -m|--machine)
-            machine_flag=1
             shift
             if [[ $# -eq 0 || "$1" == -* ]]; then
                 echo -e "\n${redColour}[!]${endColour} La opción '-m' requiere un argumento."
@@ -305,11 +345,10 @@ while [[ $# -gt 0 ]]; do
                 echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
                 exit 1
             fi
-            machineName="$1"
+            SEARCH_ARGS+="nombre:$1 "
             shift
             ;;
         -i|--ip)
-            ip_flag=1
             shift
             if [[ $# -eq 0 || "$1" == -* ]]; then
                 echo -e "\n${redColour}[!]${endColour} La opción '-i' requiere un argumento."
@@ -318,11 +357,10 @@ while [[ $# -gt 0 ]]; do
                 echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
                 exit 1
             fi
-            ip="$1"
+            SEARCH_ARGS+="ip:$1 "
             shift
             ;;
         -o|--os)
-            os_flag=1
             shift
             if [[ $# -eq 0 || "$1" == -* ]]; then
                 echo -e "\n${redColour}[!]${endColour} La opción '-o' requiere un argumento."
@@ -331,11 +369,10 @@ while [[ $# -gt 0 ]]; do
                 echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
                 exit 1
             fi
-            os="$1"
+            SEARCH_ARGS+="sistemaOperativo:$1 "
             shift
             ;;
         -d|--difficulty)
-            difficulty_flag=1
             shift
             if [[ $# -eq 0 || "$1" == -* ]]; then
                 echo -e "\n${redColour}[!]${endColour} La opción '-d' requiere un argumento."
@@ -344,7 +381,7 @@ while [[ $# -gt 0 ]]; do
                 echo -e "\n${grayColour}Pruebe 'htbmachines.sh -h' para ayuda.${endColour}"
                 exit 1
             fi
-            difficulty="$1"
+            SEARCH_ARGS+="dificultad:$1 "
             shift
             ;;
         -u|--update)
@@ -365,14 +402,8 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [[ $machine_flag -eq 1 ]]; then
-    searchMachine "nombre" "$machineName"
-elif [[ $ip_flag -eq 1 ]]; then
-    searchMachine "ip" "$ip"
-elif [[ $os_flag -eq 1 ]]; then
-    searchMachine "sistemaOperativo" "$os"
-elif [[ $difficulty_flag -eq 1 ]]; then
-    searchMachine "dificultad" "$difficulty"
+if [[ -n "$SEARCH_ARGS" ]]; then
+    searchMachine "$SEARCH_ARGS"
 else
     echo -e "\n${redColour}[!]${endColour} ${grayColour}Modo de empleo: htbmachines.sh [-o sistema] [-d dificultad]...${endColour}"
     echo -e "${yellowColour}[+]${endColour}${grayColour} Pruebe 'htbmachines.sh -h' para ayuda.${endColour}\n"
